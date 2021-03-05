@@ -9,7 +9,11 @@ index of your Java codebase.
 
 ## Install `lsif-java`
 
-The easiest way to install `lsif-java` is to download the native binary.
+Most users only install `lsif-java` on a CI machine to upload LSIF indexes to a
+remote service like [Sourcegraph](https://sourcegraph.com/). The easiest way to
+install `lsif-java` is to download the native binary. However, you can also
+install `lsif-java` as a Java binary if that's easier to integrate with your
+setup.
 
 ### Native binary
 
@@ -32,7 +36,8 @@ chmod +x lsif-java
 ### Java launcher
 
 Use [Coursier](https://get-coursier.io/docs/cli-installation.html) to launch the
-Java binary. The Java binary should work with any version of Java 8 or newer.
+Java binary. The jar files of `lsif-java` are downloaded the first time you run
+the `launch` command, and they're cached for subsequent runs.
 
 ```sh
 # Homebrew
@@ -52,9 +57,9 @@ bitsadmin /transfer downloadCoursierBat https://git.io/coursier-bat "%cd%\coursi
 
 ### Java fat jar
 
-Use the Coursier `bootstrap` command to generate a standalone Java binary, which
-includes all dependencies and does not require further access to the internet
-after installation.
+Use the Coursier `bootstrap` command to generate an executable Java binary,
+which includes all dependencies and does not require further access to the
+internet after installation.
 
 ```sh
 # macOS/Linux/Windows
@@ -95,7 +100,24 @@ libraryDependencies += "com.sourcegraph" %% "lsif-java" % "@STABLE_VERSION@"
 
 ## Run `lsif-java index`
 
-Run `lsif-java index --help` to see the available command-line options.
+Run the `lsif-java index` command to generate an LSIF index for your codebase.
+This command should automatically infer the structure of your codebase and
+configure your build tool to generate LSIF.
+
+```sh
+$ lsif-java index
+...
+info: /path/to/dump.lsif
+```
+
+The `dump.lsif` file contains the LSIF index and is ready to be used.
+
+> Running `lsif-java index` may perform side-effects on your build like cleaning
+> the compile cache before indexing. This is done to make sure that all source
+> files in the codebase get indexed.
+
+Run `lsif-java index --help` to learn more about the available command-line
+options.
 
 ```scala mdoc:passthrough
 com.sourcegraph.lsif_java.LsifJava.printHelp(Console.out)
@@ -105,7 +127,8 @@ com.sourcegraph.lsif_java.LsifJava.printHelp(Console.out)
 
 The `lsif-java` indexer is implemented as a Java compiler plugin that runs as
 part of your regular compilation in the build tool. By using Java compiler APIs,
-`lsif-java` is able to support a broad range of Java versions.
+`lsif-java` is able to generate accurate indexing information for a broad range
+of Java versions.
 
 | Language version | Support                        |
 | ---------------- | ------------------------------ |
