@@ -33,7 +33,7 @@ public class SemanticdbPlugin implements Plugin {
       JavaFileManager fm = ctx.get(JavaFileManager.class);
       FileObject outputDirStub =
           fm.getJavaFileForOutput(CLASS_OUTPUT, stubClassName, JavaFileObject.Kind.CLASS, null);
-      outputDir = Paths.get(outputDirStub.toUri()).toAbsolutePath();
+      outputDir = Paths.get(outputDirStub.toUri()).toAbsolutePath().getParent();
     } catch (Exception ignored) {
     }
 
