@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sourcegraph.semanticdb_javac.SemanticdbPlugin;
+
 public class SimpleFileManager
         extends ForwardingJavaFileManager<StandardJavaFileManager> {
 
@@ -23,7 +25,9 @@ public class SimpleFileManager
                                                String className, JavaFileObject.Kind kind, FileObject sibling) {
         SimpleClassFile result = new SimpleClassFile(
                 URI.create("string://" + className));
-        compiled.add(result);
+        if (!className.equals(SemanticdbPlugin.stubClassName)) {
+            compiled.add(result);
+        }
         return result;
     }
 

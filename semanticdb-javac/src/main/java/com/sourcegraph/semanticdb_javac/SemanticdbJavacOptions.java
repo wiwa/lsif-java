@@ -26,7 +26,7 @@ public class SemanticdbJavacOptions {
         option, option);
   }
 
-  public static SemanticdbJavacOptions parse(String[] args) {
+  public static SemanticdbJavacOptions parse(String[] args, Path defaultTargetRoot) {
     SemanticdbJavacOptions result = new SemanticdbJavacOptions();
     for (String arg : args) {
       if (arg.startsWith("-targetroot:")) {
@@ -48,7 +48,10 @@ public class SemanticdbJavacOptions {
       }
     }
     if (result.targetroot == null) {
-      result.errors.add(missingRequiredDirectoryOption("targetroot"));
+      if (defaultTargetRoot == null) {
+        result.errors.add(missingRequiredDirectoryOption("targetroot"));
+      }
+      result.targetroot = defaultTargetRoot;
     }
     if (result.sourceroot == null) {
       result.errors.add(missingRequiredDirectoryOption("sourceroot"));
